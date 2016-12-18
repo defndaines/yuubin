@@ -1,12 +1,9 @@
-pom.xml
-pom.xml.asc
-*jar
-/lib/
-/classes/
-/target/
-/checkouts/
-.lein-deps-sum
-.lein-repl-history
-.lein-plugins/
-.lein-failures
-.nrepl-port
+/target
+/classes
+*.jar
+*.class
+/.lein-*
+/.nrepl-port
+
+# Never commit. Local storage of API key.
+mailgun-api.key
