@@ -4,6 +4,7 @@
 *.class
 /.lein-*
 /.nrepl-port
+*.swp
 scratch.clj
 
 # Never commit. Local storage of API key.
