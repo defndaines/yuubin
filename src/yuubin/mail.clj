@@ -9,6 +9,17 @@
 (defn- from [mailbox]
   {"from" (str "Mailgun Sandbox <postmaster@" mailbox ">")})
 
+;; Convert JSON to format required by Mailgun.
+;; TODO When there's a body, only lets selected fields through.
+;;      Maybe restrict all after testing.
+(defn format-for-mailgun [json]
+  (let [{body "body"} json]
+    (cond
+      body (assoc
+             (select-keys json ["to" "from" "subject"])
+             "html" body)
+      :else json)))
+
 ;; TODO This version requires JSON to include necessary fields (one of "text" or "html")
 ;;   Also, "to" recipient must already be a verified user through Mailgun.
 (defn post-message
