@@ -34,6 +34,24 @@ like the following to prevent you from committing a file containing the key:
 git secrets --add '<your-key-here>'
 ```
 
+### Send Mail from REPL
+
+You can test that everything is wired up correctly to send messages via mailgun
+with the following:
+```
+(require '[yuubin.mail :as mail])
+
+(def my-key (clojure.string/trim-newline (slurp "resources/mailgun-api.key")))
+(def my-mailbox (clojure.string/trim-newline (slurp "resources/mailgun-api.mailbox")))
+(def my-message {"to" "your.name@e-mail.com"
+  "subject" "Hello World"
+  "html" "<html><body><h1>Hello World!</h1></body></html>"})
+
+(mail/post-message my-mailbox my-key my-message)
+```
+If this returns a 400, check the full exception, which can do a good job of
+pointing out what is missing from the call.
+
 ## License
 
 Copyright © 2016 Michael S. Daines

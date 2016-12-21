@@ -4,6 +4,8 @@
 *.class
 /.lein-*
 /.nrepl-port
+scratch.clj
 
 # Never commit. Local storage of API key.
 mailgun-api.key
+mailgun-api.mailbox

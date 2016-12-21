@@ -3,7 +3,9 @@
   :url "https://github.com/defndaines/yuubin"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
-  :dependencies [[org.clojure/clojure "1.8.0"]]
+  :dependencies [[org.clojure/clojure "1.8.0"]
+                 [clj-http "3.4.1"]
+                 [cheshire "5.6.3"]]
   :main ^:skip-aot yuubin.core
   :target-path "target/%s"
   :profiles {:uberjar {:aot :all}})
