@@ -13,3 +13,13 @@
       (is (= message (format-for-mailgun message))))
     (let [message {"html" "A message for you!"}]
       (is (= message (format-for-mailgun message))))))
+
+(deftest test-templates
+  (testing "load known templates"
+    (let [message {"template" "welcome.html"}
+          formatted (format-for-mailgun message)]
+      (is (not= message formatted))
+      (is (not (nil? (get formatted "html"))))))
+  (testing "ignore unknown templates"
+    (let [message {"template" "bogus.html"}]
+      (is (= message (format-for-mailgun message))))))

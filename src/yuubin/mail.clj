@@ -1,5 +1,6 @@
 (ns yuubin.mail
-  (:require [clj-http.client :as client]))
+  (:require [clj-http.client :as client]
+            [clojure.java.io :as io]))
 
 ;; Generate the HTTP address from the mailbox.
 (defn- addr-of [mailbox]
@@ -9,15 +10,26 @@
 (defn- from [mailbox]
   {"from" (str "Mailgun Sandbox <postmaster@" mailbox ">")})
 
+;; Pre-load the known templates.
+(def templates
+  (into #{} (.list (-> "templates" io/resource io/file))))
+
+(defn load-template [name]
+  (-> (str "templates/" name) io/resource slurp))
+
 ;; Convert JSON to format required by Mailgun.
 ;; TODO When there's a body, only lets selected fields through.
 ;;      Maybe restrict all after testing.
 (defn format-for-mailgun [json]
-  (let [{body "body"} json]
+  (let [{body "body" template "template"} json]
     (cond
       body (assoc
              (select-keys json ["to" "from" "subject"])
              "html" body)
+      (and template (contains? templates template))
+        (assoc
+          (select-keys json ["to" "from" "subject"])
+          "html" (load-template template))
       :else json)))
 
 ;; TODO This version requires JSON to include necessary fields (one of "text" or "html")
