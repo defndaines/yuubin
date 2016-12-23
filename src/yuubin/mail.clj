@@ -10,6 +10,10 @@
 (defn- from [mailbox]
   {"from" (str "Mailgun Sandbox <postmaster@" mailbox ">")})
 
+;; The valid keys currently supported (not all of Mailgun's keys)
+(def valid-keys
+  ["from" "to" "cc" "bcc" "subject" "text" "html"])
+
 ;; Pre-load the known templates.
 (def templates
   (into #{} (.list (-> "templates" io/resource io/file))))
@@ -24,11 +28,11 @@
   (let [{body "body" template "template"} json]
     (cond
       body (assoc
-             (select-keys json ["to" "from" "subject"])
+             (select-keys json valid-keys)
              "html" body)
       (and template (contains? templates template))
         (assoc
-          (select-keys json ["to" "from" "subject"])
+          (select-keys json valid-keys)
           "html" (load-template template))
       :else json)))
 
