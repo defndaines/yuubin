@@ -28,4 +28,4 @@
   (client/post
     (addr-of mailbox)
     {:basic-auth ["api" key]
-     :form-params (merge (from mailbox) json-msg)}))
+     :form-params (merge (from mailbox) (format-for-mailgun json-msg))}))
