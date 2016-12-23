@@ -18,7 +18,8 @@
 (def templates
   (into #{} (.list (-> "templates" io/resource io/file))))
 
-(defn load-template [name]
+;; Load a template, replacing attributes if found.
+(defn load-template [name attrs]
   (-> (str "templates/" name) io/resource slurp))
 
 ;; Convert JSON to format required by Mailgun.
@@ -29,7 +30,7 @@
       body
         (assoc message "html" body)
       (and template (contains? templates template))
-        (assoc message "html" (load-template template))
+        (assoc message "html" (load-template template json))
       :else message)))
 
 (defn post-message

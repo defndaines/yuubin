@@ -22,4 +22,11 @@
       (is (not (nil? (get formatted "html"))))))
   (testing "ignore unknown templates"
     (let [message {"template" "bogus.html"}]
-      (is (= (dissoc message "template") (format-for-mailgun message))))))
+      (is (= (dissoc message "template") (format-for-mailgun message)))))
+  (testing "using template-specific attributes"
+    (is (clojure.string/includes?
+          (load-template "welcome.html" {"t:name" "Rudy"})
+          "Rudy"))
+    (is (not (clojure.string/includes?
+               (load-template "welcome.html" {})
+               "%%" )))))
