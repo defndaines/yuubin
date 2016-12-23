@@ -22,8 +22,6 @@
   (-> (str "templates/" name) io/resource slurp))
 
 ;; Convert JSON to format required by Mailgun.
-;; TODO When there's a body, only lets selected fields through.
-;;      Maybe restrict all after testing.
 (defn format-for-mailgun [json]
   (let [{body "body" template "template"} json]
     (cond
@@ -34,12 +32,12 @@
         (assoc
           (select-keys json valid-keys)
           "html" (load-template template))
-      :else json)))
+      :else (select-keys json valid-keys))))
 
-;; TODO This version requires JSON to include necessary fields (one of "text" or "html")
-;;   Also, "to" recipient must already be a verified user through Mailgun.
 (defn post-message
-  "POST the JSON message to the Mailgun mailbox using the provided key."
+  "POST the JSON message to the Mailgun mailbox using the provided key.
+  Note that the \"to\" recipient must already be a verified user through Mailgun
+  for sending to succeed."
   [mailbox key json-msg]
   (client/post
     (addr-of mailbox)

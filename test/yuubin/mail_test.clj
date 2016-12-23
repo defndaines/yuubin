@@ -22,4 +22,4 @@
       (is (not (nil? (get formatted "html"))))))
   (testing "ignore unknown templates"
     (let [message {"template" "bogus.html"}]
-      (is (= message (format-for-mailgun message))))))
+      (is (= (dissoc message "template") (format-for-mailgun message))))))
