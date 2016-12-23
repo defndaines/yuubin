@@ -45,7 +45,7 @@ with the following:
 (def my-mailbox (clojure.string/trim-newline (slurp "resources/mailgun-api.mailbox")))
 (def my-message {"to" "your.name@e-mail.com"
   "subject" "Hello World"
-  "html" "<html><body><h1>Hello World!</h1></body></html>"})
+  "body" "<html><body><h1>Hello World!</h1></body></html>"})
 
 (mail/post-message my-mailbox my-key my-message)
 ```
