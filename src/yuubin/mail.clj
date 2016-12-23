@@ -23,16 +23,14 @@
 
 ;; Convert JSON to format required by Mailgun.
 (defn format-for-mailgun [json]
-  (let [{body "body" template "template"} json]
+  (let [{body "body" template "template"} json
+        message (select-keys json valid-keys)]
     (cond
-      body (assoc
-             (select-keys json valid-keys)
-             "html" body)
+      body
+        (assoc message "html" body)
       (and template (contains? templates template))
-        (assoc
-          (select-keys json valid-keys)
-          "html" (load-template template))
-      :else (select-keys json valid-keys))))
+        (assoc message "html" (load-template template))
+      :else message)))
 
 (defn post-message
   "POST the JSON message to the Mailgun mailbox using the provided key.
