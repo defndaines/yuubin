@@ -23,7 +23,7 @@ FIXME: listing of options this app accepts.
 ## Templates
 
 The service can send e-mails using a template body. The template must be
-predefined under (resources/templates/). Use the "template" key with the name of
+predefined under [resources/templates/](resources/templates/). Use the "template" key with the name of
 the template file as the value to use this feature.
 
 This example sends the Password Reset template to the user:
