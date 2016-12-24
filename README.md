@@ -20,6 +20,33 @@ FIXME: listing of options this app accepts.
 
 ...
 
+## Templates
+
+The service can send e-mails using a template body. The template must be
+predefined under (resources/templates/). Use the "template" key with the name of
+the template file as the value to use this feature.
+
+This example sends the Password Reset template to the user:
+```
+{ "to": "user@mail.com"
+, "subject": "Password Reset"
+, "template": "password-reset.html"
+}
+```
+
+Templates can contain attributes to replace. Template attributes must be
+prefixed with "t:". In the HTML document, they must be surrounded with
+double-percent signs, like "%%t:attr%%". If a template includes attributes
+but the request does not define them, they will be stripped from the outgoing
+message to avoid leaving the template identifiers in the message.
+This example replaces the "name" attribute in the "Welcome" template:
+```
+{ "to": "user@mail.com"
+, "subject": "Welcome to Yūbin"
+, "template": "welcome.html"
+, "t:name": "Mikan"
+}
+```
 
 ## Development
 
@@ -34,9 +61,9 @@ like the following to prevent you from committing a file containing the key:
 git secrets --add '<your-key-here>'
 ```
 
-### Send Mail from REPL
+### Send Mail from the REPL
 
-You can test that everything is wired up correctly to send messages via mailgun
+You can test that everything is wired up correctly to send messages via Mailgun
 with the following:
 ```
 (require '[yuubin.mail :as mail])
