@@ -18,9 +18,28 @@
 (def templates
   (into #{} (.list (-> "templates" io/resource io/file))))
 
+;; Substitute template attributes into message body.
+(defn- sub-template-attrs [body attrs]
+  (reduce-kv
+    (fn [acc k v]
+      (if (clojure.string/starts-with? k "t:")
+        (let [re-attr (re-pattern (str "%%" k "%%"))]
+          (clojure.string/replace acc re-attr v))
+        acc))
+    body
+    attrs))
+
+;; Avoid printing template attributes if they aren't used.
+(defn- rm-unused-template-attrs [body]
+  (clojure.string/replace body #"%%[^%]*%%" ""))
+
 ;; Load a template, replacing attributes if found.
 (defn load-template [name attrs]
-  (-> (str "templates/" name) io/resource slurp))
+  (-> (str "templates/" name)
+      io/resource
+      slurp
+      (sub-template-attrs attrs)
+      rm-unused-template-attrs))
 
 ;; Convert JSON to format required by Mailgun.
 (defn format-for-mailgun [json]
