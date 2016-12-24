@@ -19,6 +19,10 @@ FIXME: listing of options this app accepts.
 ## Examples
 
 ...
+To send a request via `curl`:
+```
+curl -X POST -H "Content-Type: application/json" localhost:3000 -d '{"to": "mikan@e-mail.com", "subject": "Welcome to Yūbin", "template": "welcome.html", "t:name": "Mikan"}'
+```
 
 ## Templates
 
