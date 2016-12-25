@@ -8,11 +8,11 @@ Download from https://github.com/defndaines/yuubin/releases
 
 ## Usage
 
-FIXME: explanation
+To run as a standalone service:
 
     $ java -jar yuubin-0.1.0-standalone.jar config.edn
 
-In order to run the service as a standalone JAR, an EDN configuration file must
+In order to run the service from the standalone JAR, an EDN configuration file must
 be passed with the following values provided (if "port" is not provided, will
 default to 3000):
 ```
@@ -22,9 +22,22 @@ default to 3000):
  :template-dir "/etc/yuubin/templates"}
 ```
 
+## API
+
+The service expects POST requests passing JSON data about the mail message to
+send. At this time, the service does not authenticate the incoming request, so
+the service will send out valid messages using the configured mailbox and API
+key. If a "from" field is not provided, it uses the "postmaster"
+account of the configured "mailbox".
+
 ## Examples
 
-To send a request via `curl`:
+To send a simple message providing the message body:
+```
+curl -X POST -H "Content-Type: application/json" localhost:3000 -d '{"to": "mikan@e-mail.com", "subject": "Welcome to Yūbin", "body": "<h1>Hey Mikan!</h1><p>We are really happy to have you here at Yūbin. If you have any questions, please contact us."}'
+```
+
+To send a request using a template:
 ```
 curl -X POST -H "Content-Type: application/json" localhost:3000 -d '{"to": "mikan@e-mail.com", "subject": "Welcome to Yūbin", "template": "welcome.html", "t:name": "Mikan"}'
 ```
@@ -88,6 +101,16 @@ with the following:
 ```
 If this returns a 400, check the full exception, which can do a good job of
 pointing out what is missing from the call.
+
+### Ring Server
+
+For development, you can run the service using:
+```
+lein ring server 3000
+```
+
+This will run the server locally on port 3000. It will also pick up many code
+changes dynamically so that the service can be tweaked and tested.
 
 ## License
 
