@@ -10,15 +10,20 @@ Download from https://github.com/defndaines/yuubin/releases
 
 FIXME: explanation
 
-    $ java -jar yuubin-0.1.0-standalone.jar [args]
+    $ java -jar yuubin-0.1.0-standalone.jar config.edn
 
-## Options
-
-FIXME: listing of options this app accepts.
+In order to run the service as a standalone JAR, an EDN configuration file must
+be passed with the following values provided (if "port" is not provided, will
+default to 3000):
+```
+{:port 3030
+ :mailbox "mailgun-api-mailbox"
+ :api-key "mailgun-api-key"
+ :template-dir "/etc/yuubin/templates"}
+```
 
 ## Examples
 
-...
 To send a request via `curl`:
 ```
 curl -X POST -H "Content-Type: application/json" localhost:3000 -d '{"to": "mikan@e-mail.com", "subject": "Welcome to Yūbin", "template": "welcome.html", "t:name": "Mikan"}'
