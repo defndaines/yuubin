@@ -10,6 +10,7 @@
                  [org.clojure/data.json "0.2.6"]]
   :plugins [[lein-ring "0.10.0"]]
   :ring {:handler yuubin.core/handler}
+  :uberjar-exclusions [#"templates/.*.html"]
   :main ^:skip-aot yuubin.core
   :target-path "target/%s"
   :profiles {:uberjar {:aot :all}})
