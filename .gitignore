@@ -6,6 +6,7 @@
 /.nrepl-port
 *.swp
 scratch.clj
+config/dev.edn
 
 # Never commit. Local storage of API key.
 mailgun-api.key
