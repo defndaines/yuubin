@@ -31,7 +31,7 @@
                mail-handler
                json/write-str)}))
 
-;; For `lein ring server`
+;; For `lein ring server`. Doesn't contact mail server, only echoes request back.
 (def handler
   (let [template-dir (.getFile (-> "templates" clojure.java.io/resource))]
     (ring-handler (fn [json] (mail/format-for-mailgun json template-dir)))))
