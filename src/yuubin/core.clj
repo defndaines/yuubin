@@ -40,6 +40,6 @@
   [& args]
   (if-let [[conf-file & _] args]
     (let [config (verify-config (read-conf conf-file))
-          mail-handler (fn [json] (mail/format-for-mailgun json (:template-dir config)))]
+          mail-handler (partial mail/post-message (:mailbox config) (:api-key config) (:template-dir config))]
       (ring-jetty/run-jetty (ring-handler mail-handler) {:port (:port config)}))
-      (println "Must pass EDN configuration file to run.\n  Usage: yuubin <config.edn>")))
+    (println "Must pass EDN configuration file to run.\n  Usage: yuubin <config.edn>")))
