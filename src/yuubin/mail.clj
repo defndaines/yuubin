@@ -14,10 +14,6 @@
 (def valid-keys
   ["from" "to" "cc" "bcc" "subject" "text" "html"])
 
-;; Pre-load the known templates.
-(def templates
-  (into #{} (.list (-> "templates" io/resource io/file))))
-
 ;; Substitute template attributes into message body.
 (defn- sub-template-attrs [body attrs]
   (reduce-kv
@@ -34,30 +30,32 @@
   (clojure.string/replace body #"%%[^%]*%%" ""))
 
 ;; Load a template, replacing attributes if found.
-(defn load-template [name attrs]
-  (-> (str "templates/" name)
-      io/resource
+;; Throws java.io.FileNotFoundException if file not found.
+(defn load-template [dir name attrs]
+  (-> (str dir "/" name)
+      io/file
       slurp
       (sub-template-attrs attrs)
       rm-unused-template-attrs))
 
 ;; Convert JSON to format required by Mailgun.
-(defn format-for-mailgun [json]
+(defn format-for-mailgun
+  [json template-dir]
   (let [{body "body" template "template"} json
         message (select-keys json valid-keys)]
     (cond
       body
         (assoc message "html" body)
-      (and template (contains? templates template))
-        (assoc message "html" (load-template template json))
+      template
+        (assoc message "html" (load-template template-dir template json))
       :else message)))
 
 (defn post-message
   "POST the JSON message to the Mailgun mailbox using the provided key.
   Note that the \"to\" recipient must already be a verified user through Mailgun
   for sending to succeed."
-  [mailbox key json-msg]
+  [mailbox key template-dir json-msg]
   (client/post
     (addr-of mailbox)
     {:basic-auth ["api" key]
-     :form-params (merge (from mailbox) (format-for-mailgun json-msg))}))
+     :form-params (merge (from mailbox) (format-for-mailgun json-msg template-dir))}))

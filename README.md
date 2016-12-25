@@ -74,6 +74,7 @@ with the following:
 
 (def my-key (clojure.string/trim-newline (slurp "resources/mailgun-api.key")))
 (def my-mailbox (clojure.string/trim-newline (slurp "resources/mailgun-api.mailbox")))
+(def template-dir "resources/templates")
 (def my-message {"to" "your.name@e-mail.com"
   "subject" "Hello World"
   "body" "<html><body><h1>Hello World!</h1></body></html>"})
