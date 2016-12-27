@@ -3,8 +3,7 @@
 
 ;; TODO Remove randomness after testing.
 (def default-consumer-config
-  {"bootstrap.servers" "localhost:9092"
-   "group.id" (str "yuubin-" (rand-int 10000))
+  {"group.id" (str "yuubin-" (rand-int 10000))
    "auto.offset.reset" "earliest"
    "enable.auto.commit" "false"
    "key.deserializer" "org.apache.kafka.common.serialization.StringDeserializer"
