@@ -101,6 +101,14 @@ The `incoming-topic` will be monitored for incoming JSON messages.
 The `receipt-topic` will contain the response from the
 Mailgun request for each processed message.
 
+The service hard-codes the Kafka group ID and syncs messages once they've been
+handled. This means that if the service crashes and is restarted, it should not
+resend messages which have already been sent.
+
+At this time, the service does not provide an explicit way to track queued
+requests and receipts. It could be changed to require incoming messages to
+provide an ID and then include that ID in the receipt.
+
 ## Development
 
 Use of this project requires an API key from Mailgun. See their
