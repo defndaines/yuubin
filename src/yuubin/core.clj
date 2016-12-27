@@ -49,12 +49,12 @@
   (let [consumer-config (merge kafka/default-consumer-config {"bootstrap.servers" (:bootstrap-servers config)})
         consumer (kafka/consumer consumer-config (:incoming-topic config))]
     (watch-queue
-      (kafka/read-topic
-        consumer
-        (fn [record]
-          (-> record
-              json/read-str
-              mail-handler))))))
+      #(kafka/read-topic
+         consumer
+         (fn [record]
+           (-> record
+               json/read-str
+               mail-handler))))))
 
 (defn -main
   [& args]
