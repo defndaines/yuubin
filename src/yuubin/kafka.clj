@@ -2,9 +2,8 @@
   (:import [org.apache.kafka.clients.consumer KafkaConsumer]
            [org.apache.kafka.clients.producer KafkaProducer ProducerRecord]))
 
-;; TODO Remove randomness after testing.
 (def default-consumer-config
-  {"group.id" (str "yuubin-" (rand-int 10000))
+  {"group.id" "yuubin-consumer"
    "auto.offset.reset" "earliest"
    "enable.auto.commit" "false"
    "key.deserializer" "org.apache.kafka.common.serialization.StringDeserializer"
