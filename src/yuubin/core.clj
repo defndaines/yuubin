@@ -45,16 +45,27 @@
     (.setDaemon true)
     (.start)))
 
+;; NOTE: Not providing a way to identify unique messages and results.
+;;   It would be better to have the incoming messages self-identify, then use
+;;   that information when tracking results.
 (defn- monitor-queue [config mail-handler]
-  (let [consumer-config (merge kafka/default-consumer-config {"bootstrap.servers" (:bootstrap-servers config)})
-        consumer (kafka/consumer consumer-config (:incoming-topic config))]
+  (let [bootstrap-config {"bootstrap.servers" (:bootstrap-servers config)}
+        consumer-config (merge kafka/default-consumer-config bootstrap-config)
+        consumer (kafka/consumer consumer-config (:incoming-topic config))
+        producer (kafka/producer (merge kafka/default-producer-config bootstrap-config))
+        receipt-handler (partial kafka/write-topic producer (:receipt-topic config))]
     (watch-queue
       #(kafka/read-topic
          consumer
          (fn [record]
-           (-> record
-               json/read-str
-               mail-handler))))))
+           (try
+             (-> record
+                 json/read-str
+                 mail-handler
+                 json/write-str
+                 receipt-handler)
+             (catch Exception e
+               (receipt-handler (str "{\"error\": \"" (.getMessage e) "\"}")))))))))
 
 (defn -main
   [& args]

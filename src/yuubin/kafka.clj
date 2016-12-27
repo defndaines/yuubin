@@ -1,5 +1,6 @@
 (ns yuubin.kafka
-  (:import [org.apache.kafka.clients.consumer KafkaConsumer]))
+  (:import [org.apache.kafka.clients.consumer KafkaConsumer]
+           [org.apache.kafka.clients.producer KafkaProducer ProducerRecord]))
 
 ;; TODO Remove randomness after testing.
 (def default-consumer-config
@@ -8,6 +9,10 @@
    "enable.auto.commit" "false"
    "key.deserializer" "org.apache.kafka.common.serialization.StringDeserializer"
    "value.deserializer" "org.apache.kafka.common.serialization.StringDeserializer"})
+
+(def default-producer-config
+  {"key.serializer" "org.apache.kafka.common.serialization.StringSerializer"
+   "value.serializer" "org.apache.kafka.common.serialization.StringSerializer"})
 
 (defn consumer
   "Initialize a Kafka Consumer with configuration and subscribed to the topic."
@@ -23,3 +28,13 @@
       (doseq [record records]
         (process-fn (.value record))))
     (.commitSync consumer)))
+
+(defn producer
+  "Initialize a Kafka Producer with configuration."
+  [config]
+  (KafkaProducer. config))
+
+(defn write-topic
+  "Write a single value to a topic using the provided producer."
+  [producer topic value]
+  (.send producer (ProducerRecord. topic value)))
