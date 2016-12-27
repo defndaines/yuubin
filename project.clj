@@ -7,7 +7,9 @@
                  [clj-http "3.4.1"]
                  [ring/ring-core "1.5.0"]
                  [ring/ring-jetty-adapter "1.5.0"]
-                 [org.clojure/data.json "0.2.6"]]
+                 [org.clojure/data.json "0.2.6"]
+                 [org.apache.kafka/kafka_2.11 "0.10.1.0"]
+                 [org.apache.kafka/kafka-clients "0.10.1.0"]]
   :plugins [[lein-ring "0.10.0"]]
   :ring {:handler yuubin.core/handler}
   :uberjar-exclusions [#"templates/.*.html"]
