@@ -15,11 +15,12 @@
                          java.io.PushbackReader.)]
     (clojure.edn/read reader)))
 
+(def required-keys
+  [:mailbox :api-key :template-dir :bootstrap-servers :incoming-topic :receipt-topic])
+
 ;; Ensure required fields are set, and default port to 3000 if not provided.
 (defn- verify-config [conf]
-  {:pre [(contains? conf :mailbox)
-         (contains? conf :api-key)
-         (contains? conf :template-dir)]}
+  {:pre [(every? conf required-keys)]}
   (merge {:port 3000} conf))
 
 (defn- ring-handler [mail-handler]
@@ -44,7 +45,6 @@
     (.setDaemon true)
     (.start)))
 
-;; TODO Require :bootstrap-servers and :incoming-topic to be in config.
 (defn- monitor-queue [config mail-handler]
   (let [consumer-config (merge kafka/default-consumer-config {"bootstrap.servers" (:bootstrap-servers config)})
         consumer (kafka/consumer consumer-config (:incoming-topic config))]
