@@ -23,15 +23,18 @@
   {:pre [(every? conf required-keys)]}
   (merge {:port 3000} conf))
 
+;; 400 and 500 responses aren't handled well.
+;; See https://github.com/dakrone/clj-http#exceptions for alternatives.
 (defn- ring-handler [mail-handler]
   (fn [request]
-    {:status 200
-     :headers {"Content-Type" "application/json"}
-     :body (-> request
-               ring-util/body-string
-               json/read-str
-               mail-handler
-               json/write-str)}))
+    (if (= :post (:request-method request))
+      (let [response (-> request
+                         ring-util/body-string
+                         json/read-str
+                         mail-handler)]
+        {:status (:status response)
+         :headers {"Content-Type" "application/json"}
+         :body (:body response)}))))
 
 ;; For `lein ring server`. Doesn't contact mail server, only echoes request back.
 (def handler
